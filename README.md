@@ -8,7 +8,7 @@ article on the [Tarides blog](https://tarides.com/blog.html).
 ## Setup
 
 To be able to correctly run the examples in this repo and toy around with fuzzing you will need to
-install `afl` and have an `+afl` opam switch so that the binaries are properly instrumented for
+install `afl` and have a `+afl` opam switch so that the binaries are properly instrumented for
 fuzzing.
 
 You can setup the afl switch by running:
@@ -16,7 +16,7 @@ You can setup the afl switch by running:
 $ opam switch create fuzzing-switch 4.07.1+afl
 ```
 
-You can either install from your distribution, e.g. on Debian:
+You can either install AFL from your distribution, e.g. on Debian:
 ```
 $ apt update && apt install afl
 ```
@@ -30,12 +30,12 @@ Some of the examples have extra dependencies such as `crowbar` and `bun`. You ca
 running:
 
 ```
-$ opam install crowbar bun
+$ opam install --switch=fuzzing-switch crowbar bun
 ```
 
 ## Simple parser
 
-The `simple-parser` contains the most basic example and shows how you can use afl-fuzz to fuzz a
+The `simple-parser` folder contains the most basic example and shows how you can use afl-fuzz to fuzz a
 simple parsing function written in OCaml. 
 
 The `lib` subfolder contains a library with a single `parse_int` function that parses an int from a
@@ -59,6 +59,8 @@ which will do pretty much exactly the above.
 
 AFL should find the crash fairly quickly. It will show up in the top right corner of `afl-fuzz`'s
 output, under `uniq crashes`, see the picture below.
+
+![afl-output-screenshot-emphasized-crashes](img/afl-output-screenshot-emphasized-crashes.png)
 
 You can inspect the input that triggered the crash by running:
 ```
