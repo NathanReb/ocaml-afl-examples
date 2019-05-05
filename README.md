@@ -2,6 +2,9 @@
 
 Small examples of how to use AFL to fuzz OCaml programs
 
+These examples are here to help you quickly get set up with AFL and to illustrate an upcoming
+article on the [Tarides blog](https://tarides.com/blog.html).
+
 ## Setup
 
 To be able to correctly run the examples in this repo and toy around with fuzzing you will need to
