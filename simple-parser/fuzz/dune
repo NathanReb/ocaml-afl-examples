@@ -7,6 +7,6 @@
  (name fuzz-simple-parser)
  (deps
   fuzz.exe
-  (source_tree input))
+  (source_tree inputs))
  (action
-  (run afl-fuzz -i input -o output -- ./fuzz.exe @@)))
+  (run afl-fuzz -i inputs -o findings -- ./fuzz.exe @@)))
