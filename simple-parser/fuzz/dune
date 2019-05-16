@@ -1,6 +1,5 @@
 (executable
  (name fuzz)
- (modules fuzz)
  (libraries simple_parser))
 
 (alias
