@@ -71,3 +71,51 @@ and reproduce it by running:
 ```
 $ ./_build/default/simple-parser/fuzz/fuzz.exe _build/default/simple-parser/fuzz/findings/crashes/id*
 ```
+
+## Awesome list
+
+The `awesome-list` folder contains an example of how AFL can be used conjointly with the `crowbar`
+library to both find crashes and do some property based testing.
+
+The `lib` subfolder contains a library with a single `sort` function that sorts lists of integers.
+Again it mostly works fine except in two specific cases where it will either crash or sort the list
+in reverse order.
+
+The `fuzz` subfolder contains the code for the fuzzing binary. It is slightly different from the
+previous example as here we use `crowbar` to build the correct binary instead of doing it by hand.
+Furthermore, we don't check for crashes only anymore but also want to know if the function under
+test invariant, i.e. the resulting list is sorted in increasing order, stands. The resulting fuzzing
+binary has roughly two modes of execution: an AFL one and a QuickCheck one.
+
+In QuickCheck mode it uses OCaml's randonmess source to try a fixed number of inputs. To try that
+mode you can run:
+```
+$ dune exec awesome-list/fuzz/fuzz.exe
+```
+
+Alternatively you can also run the QuickCheck mode until a test failure is discovered with the `-i`
+option of the binary like this:
+```
+$ dune exec -- awesome-list/fuzz/fuzz.exe -i
+```
+
+In AFL mode, it just use the input supplied by AFL as a source of randomness to supply values of the
+right form to your test functions. You can run it just like with a regular fuzzing binary:
+```
+$ dune build awesome-list/fuzz/fuzz.exe
+$ afl-fuzz -i awesome-list/fuzz/inputs -o _build/default/awesome-list/fuzz/findings ./_build/default/awesome-list/fuzz/fuzz.exe @@
+```
+
+Or use the convenience dune alias:
+```
+$ dune build @fuzz-awesome-list
+```
+
+Both modes should find the bugs in a split second. In QuickCheck mode it'll pretty print the input
+value that triggered the failure. In AFL mode you can proceed as in the above example, i.e. kill the
+`afl-fuzz` process once it found the two unique crashes. From there, inspecting the input files
+won't tell you much as it's just used to seed `crowbar` PRNG but you can run the fuzz binary on
+those and the input values will be pretty printed the same way they are in QuickCheck mode:
+```
+$ ./_build/default/awesome-list/fuzz/fuzz.exe ./_build/default/awesome-list/fuzz/findings/crashes/<input_file>
+```

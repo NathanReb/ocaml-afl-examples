@@ -1,0 +1,11 @@
+(executable
+  (name fuzz)
+  (libraries awesome_list crowbar))
+
+(alias
+ (name fuzz-awesome-list)
+ (deps
+  fuzz.exe
+  (source_tree inputs))
+ (action
+  (run afl-fuzz -i inputs -o findings -- ./fuzz.exe @@)))
