@@ -47,7 +47,7 @@ passed to afl and an `inputs/` folder with a couple starting test cases.
 You can try fuzzing it by yourself:
 ```
 $ dune build simple-parser/fuzz/fuzz.exe
-$ afl-fuzz -i simple-parser/fuzz/inputs -o _build/default/simple-parser/fuzz/findings _build/default/simple-parser/fuzz/fuzz.exe
+$ afl-fuzz -i simple-parser/fuzz/inputs -o _build/default/simple-parser/fuzz/findings _build/default/simple-parser/fuzz/fuzz.exe @@
 ```
 
 Or simply run:
