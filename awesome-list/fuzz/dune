@@ -1,6 +1,6 @@
 (executable
-  (name fuzz)
-  (libraries awesome_list crowbar))
+ (name fuzz)
+ (libraries awesome_list crowbar))
 
 (alias
  (name fuzz)
