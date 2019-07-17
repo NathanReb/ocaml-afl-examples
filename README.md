@@ -52,7 +52,7 @@ $ afl-fuzz -i simple-parser/fuzz/inputs -o _build/default/simple-parser/fuzz/fin
 
 Or simply run:
 ```
-$ dune build @fuzz-simple-parser --no-buffer
+$ dune build @simple-parser/fuzz --no-buffer
 ```
 
 which will do pretty much exactly the above.
@@ -108,7 +108,7 @@ $ afl-fuzz -i awesome-list/fuzz/inputs -o _build/default/awesome-list/fuzz/findi
 
 Or use the convenience dune alias:
 ```
-$ dune build @fuzz-awesome-list
+$ dune build @awesome-list/fuzz
 ```
 
 Both modes should find the bugs in a split second. In QuickCheck mode it'll pretty print the input

@@ -3,7 +3,7 @@
   (libraries awesome_list crowbar))
 
 (alias
- (name fuzz-awesome-list)
+ (name fuzz)
  (deps
   fuzz.exe
   (source_tree inputs))

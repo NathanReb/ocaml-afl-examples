@@ -3,7 +3,7 @@
  (libraries simple_parser))
 
 (alias
- (name fuzz-simple-parser)
+ (name fuzz)
  (deps
   fuzz.exe
   (source_tree inputs))
