@@ -16,4 +16,4 @@
   fuzz.exe
   (source_tree input))
  (action
-  (run bun -v --input inputs --output findings -- ./fuzz.exe)))
+  (run bun --input inputs --output findings -- ./fuzz.exe)))
