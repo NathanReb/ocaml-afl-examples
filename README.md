@@ -108,7 +108,7 @@ $ afl-fuzz -i awesome-list/fuzz/inputs -o _build/default/awesome-list/fuzz/findi
 
 Or use the convenience dune alias:
 ```
-$ dune build @awesome-list/fuzz
+$ dune build @awesome-list/fuzz --no-buffer
 ```
 
 Both modes should find the bugs in a split second. In QuickCheck mode it'll pretty print the input
