@@ -17,3 +17,12 @@
   (source_tree input))
  (action
   (run bun -v --input inputs --output findings -- ./fuzz.exe)))
+
+(alias
+ (name bun-fuzz-no-kill)
+ (deps
+  fuzz.exe
+  (source_tree input))
+ (action
+  (run timeout --preserve-status 5m bun -v --no-kill --input inputs --output
+    findings -- ./fuzz.exe)))
