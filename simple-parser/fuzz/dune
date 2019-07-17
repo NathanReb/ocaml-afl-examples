@@ -9,3 +9,11 @@
   (source_tree inputs))
  (action
   (run afl-fuzz -i inputs -o findings -- ./fuzz.exe @@)))
+
+(alias
+ (name bun-fuzz)
+ (deps
+  fuzz.exe
+  (source_tree input))
+ (action
+  (run bun -v --input inputs --output findings -- ./fuzz.exe)))

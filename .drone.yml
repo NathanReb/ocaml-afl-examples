@@ -1,0 +1,18 @@
+kind: pipeline
+name: amd
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  image: ocaml/opam2:4.07
+  commands:
+  - sudo apt-get update && sudo apt-get -y install afl
+  - sudo chown -R opam .
+  - git -C /home/opam/opam-repository pull origin && opam update
+  - opam switch 4.07+afl
+  - opam depext crowbar bun
+  - opam install -y crowbar bun
+  - opam exec -- dune build @awesome-list/bun-fuzz --no-buffer
