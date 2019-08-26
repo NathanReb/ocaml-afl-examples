@@ -135,3 +135,94 @@ the test failed:
 
 Fatal error: exception Crowbar.TestFailure
 ```
+
+## Bun and fuzz testing in CI
+
+This repo also contain Drone CI scripts that run fuzz testing for both our examples.
+`afl-fuzz` is not very CI friendly by essence so we use
+[`bun`](https://github.com/yomimono/ocaml-bun). `bun` is a CLI wrapper for `afl-fuzz`, written in
+OCaml. It takes care of a few things for you, such as running several fuzzing processes in parallel
+while correctly setting `afl-fuzz` to do so but most of all it wraps each of those processes so that
+the execution fail whenever one of them finds a crash. Finally, it will also display the input that
+lead to the test failure so that you can try to reproduce and debug it locally.
+
+The CI script itself is in the `.drone.yml` file and it looks like that:
+```yml
+kind: pipeline
+name: amd
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  image: ocaml/opam2:4.07
+  commands:
+  - sudo apt-get update && sudo apt-get -y install afl
+  - sudo chown -R opam .
+  - git -C /home/opam/opam-repository pull origin && opam update
+  - opam switch 4.07+afl
+  - opam depext crowbar bun
+  - opam install -y crowbar bun
+  - opam exec -- dune build bun-fuzz --no-buffer
+```
+
+As you can see, there's nothing special here. We install the dependencies and build the `bun-fuzz`
+alias.
+
+There's one for `simple-parser` and one  for `awesome-list`. The aliases are identical and defined
+as:
+```
+(alias
+ (name bun-fuzz)
+ (locks %{project_root}/bun)
+ (deps
+  fuzz.exe
+  (source_tree input))
+ (action
+  (run bun --input inputs --output findings -- ./fuzz.exe)))
+```
+
+The default `bun` invocation is very similar to a regular `afl-fuzz` invocation.
+You'll note the use of `(locks %{project_root}/bun)` to prevent concurrent execution of fuzz tests
+by dune. This is required because by default `bun` will use all available cores and `afl-fuzz` won't
+use a core that's already running an `afl-fuzz` process.
+
+You may try it locally:
+```
+$ dune build @awesome-list/bun-fuzz
+09:05.39:Fuzzers launched: [1 (pid=7357); 2 (pid=7358); 3 (pid=7359);
+                            4 (pid=7360); 5 (pid=7361); 6 (pid=7362);
+                            7 (pid=7363); 8 (pid=7364)].
+09:05.39:Fuzzer 1 (pid=7357) finished
+Crashes found! Take a look; copy/paste to save for reproduction:
+echo J3JhaWl0IA== | base64 -d > crash_0.$(date -u +%s)
+09:05.39:[ERROR]All fuzzers finished, but some crashes were found!
+```
+
+`bun` comes with a bunch of configuration CLI options and I invite you to take a look at its
+documentation by running `bun --help` to find out how to make the most out of it in your particular
+use case.
+
+One useful bun feature is its `no-kill` mode. There's a `bun-fuzz-no-kill` alias available for
+`awesome-list` fuzz tests, it's defined as:
+```
+(alias
+ (name bun-fuzz-no-kill)
+ (locks %{project_root}/bun)
+ (deps
+  fuzz.exe
+  (source_tree input))
+ (action
+  (run timeout --preserve-status 1m bun --no-kill --input inputs --output
+    findings -- ./fuzz.exe)))
+```
+
+The `--no-kill` option tells `bun` to let the fuzzing processes run even after they found their
+first crash. That can be convenient if you're not very confident about an implementation you're
+fuzzing and you are expecting to find several bugs in it.
+What makes this mode so nice is that it integrates with `timeout` fairly well. When receiving
+`SIGTERM`, `bun` will shutdown all the `afl-fuzz` processes and will pretty print the crash
+triggering inputs to the standard output in the same way it does in regular mode which makes this
+a viable option for running fuzz tests in CI as well.
