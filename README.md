@@ -36,7 +36,7 @@ $ opam install --switch=fuzzing-switch crowbar bun
 ## Simple parser
 
 The `simple-parser` folder contains the most basic example and shows how you can use afl-fuzz to fuzz a
-simple parsing function written in OCaml. 
+simple parsing function written in OCaml.
 
 The `lib` subfolder contains a library with a single `parse_int` function that parses an int from a
 string, with a little twist.
@@ -65,11 +65,14 @@ output, under `uniq crashes`, see the picture below.
 You can inspect the input that triggered the crash by running:
 ```
 $ cat _build/default/simple-parser/fuzz/findings/crashes/id*
+abc
 ```
 
 and reproduce it by running:
 ```
-$ ./_build/default/simple-parser/fuzz/fuzz.exe _build/default/simple-parser/fuzz/findings/crashes/id*
+$ cd _build/default/simple-parser/fuzz
+$ ./fuzz.exe findings/crashes/id*
+Fatal error: exception Failure("secret crash")
 ```
 
 ## Awesome list
@@ -117,5 +120,18 @@ value that triggered the failure. In AFL mode you can proceed as in the above ex
 won't tell you much as it's just used to seed `crowbar` PRNG but you can run the fuzz binary on
 those and the input values will be pretty printed the same way they are in QuickCheck mode:
 ```
-$ ./_build/default/awesome-list/fuzz/fuzz.exe ./_build/default/awesome-list/fuzz/findings/crashes/<input_file>
+$ cd _build/default/awesome-list/fuzz
+$ ./fuzz.exe findings/crashes/<input_file>
+Awesome_list.sort: ....
+Awesome_list.sort: FAIL
+
+When given the input:
+
+    [4; 5; 6]
+
+the test failed:
+
+    check false
+
+Fatal error: exception Crowbar.TestFailure
 ```
