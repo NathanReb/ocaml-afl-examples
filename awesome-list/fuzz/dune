@@ -12,6 +12,7 @@
 
 (alias
  (name bun-fuzz)
+ (locks %{project_root}/bun)
  (deps
   fuzz.exe
   (source_tree input))
@@ -20,6 +21,7 @@
 
 (alias
  (name bun-fuzz-no-kill)
+ (locks %{project_root}/bun)
  (deps
   fuzz.exe
   (source_tree input))
