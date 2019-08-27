@@ -9,3 +9,12 @@
   (source_tree inputs))
  (action
   (run afl-fuzz -i inputs -o findings -- ./fuzz.exe @@)))
+
+(alias
+ (name bun-fuzz)
+ (locks %{project_root}/bun)
+ (deps
+  fuzz.exe
+  (source_tree input))
+ (action
+  (run bun --input inputs --output findings -- ./fuzz.exe)))
