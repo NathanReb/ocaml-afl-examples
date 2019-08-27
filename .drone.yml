@@ -15,4 +15,4 @@ steps:
   - opam switch 4.07+afl
   - opam depext crowbar bun
   - opam install -y crowbar bun
-  - opam exec -- dune build bun-fuzz --no-buffer
+  - opam exec -- dune build @bun-fuzz --no-buffer

@@ -165,7 +165,7 @@ steps:
   - opam switch 4.07+afl
   - opam depext crowbar bun
   - opam install -y crowbar bun
-  - opam exec -- dune build bun-fuzz --no-buffer
+  - opam exec -- dune build @bun-fuzz --no-buffer
 ```
 
 As you can see, there's nothing special here. We install the dependencies and build the `bun-fuzz`
