@@ -201,6 +201,9 @@ echo J3JhaWl0IA== | base64 -d > crash_0.$(date -u +%s)
 09:05.39:[ERROR]All fuzzers finished, but some crashes were found!
 ```
 
+or you can take a look at the [latest
+build](https://cloud.drone.io/NathanReb/ocaml-afl-examples/16/1/2).
+
 `bun` comes with a bunch of configuration CLI options and I invite you to take a look at its
 documentation by running `bun --help` to find out how to make the most out of it in your particular
 use case.
