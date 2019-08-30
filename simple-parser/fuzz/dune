@@ -1,20 +1,20 @@
 (executable
- (name fuzz)
+ (name fuzz_me)
  (libraries simple_parser))
 
 (alias
  (name fuzz)
  (deps
-  fuzz.exe
+  (:exe fuzz_me.exe)
   (source_tree inputs))
  (action
-  (run afl-fuzz -i inputs -o findings -- ./fuzz.exe @@)))
+  (run afl-fuzz -i inputs -o findings -- ./%{exe} @@)))
 
 (alias
  (name bun-fuzz)
  (locks %{project_root}/bun)
  (deps
-  fuzz.exe
+  (:exe fuzz_me.exe)
   (source_tree input))
  (action
-  (run bun --input inputs --output findings -- ./fuzz.exe)))
+  (run bun --input inputs --output findings -- ./%{exe})))

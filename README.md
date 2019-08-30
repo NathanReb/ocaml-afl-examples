@@ -26,8 +26,8 @@ Or by using the convenience opam package:
 $ opam install --switch=fuzzing-switch afl
 ```
 
-Some of the examples have extra dependencies such as `crowbar` and `bun`. You can install all of them by
-running:
+Some of the examples have extra dependencies such as `crowbar` and `bun`. You can install all of
+them by running:
 
 ```
 $ opam install --switch=fuzzing-switch crowbar bun
@@ -35,19 +35,19 @@ $ opam install --switch=fuzzing-switch crowbar bun
 
 ## Simple parser
 
-The `simple-parser` folder contains the most basic example and shows how you can use afl-fuzz to fuzz a
-simple parsing function written in OCaml.
+The `simple-parser` folder contains the most basic example and shows how you can use afl-fuzz to
+fuzz a simple parsing function written in OCaml.
 
 The `lib` subfolder contains a library with a single `parse_int` function that parses an int from a
 string, with a little twist.
 
-The `fuzz` subfolder contains the code to be compiled to the fuzzing binary `fuzz.exe` which must be
-passed to afl and an `inputs/` folder with a couple starting test cases.
+The `fuzz` subfolder contains the code to be compiled to the fuzzing binary `fuzz_me.exe` which
+must be passed to afl and an `inputs/` folder with a couple starting test cases.
 
 You can try fuzzing it by yourself:
 ```
-$ dune build simple-parser/fuzz/fuzz.exe
-$ afl-fuzz -i simple-parser/fuzz/inputs -o _build/default/simple-parser/fuzz/findings _build/default/simple-parser/fuzz/fuzz.exe @@
+$ dune build simple-parser/fuzz/fuzz_me.exe
+$ afl-fuzz -i simple-parser/fuzz/inputs -o _build/default/simple-parser/fuzz/findings _build/default/simple-parser/fuzz/fuzz_me.exe @@
 ```
 
 Or simply run:
@@ -71,7 +71,7 @@ abc
 and reproduce it by running:
 ```
 $ cd _build/default/simple-parser/fuzz
-$ ./fuzz.exe findings/crashes/id*
+$ ./fuzz_me.exe findings/crashes/id*
 Fatal error: exception Failure("secret crash")
 ```
 
@@ -93,20 +93,20 @@ binary has roughly two modes of execution: an AFL one and a QuickCheck one.
 In QuickCheck mode it uses OCaml's randonmess source to try a fixed number of inputs. To try that
 mode you can run:
 ```
-$ dune exec awesome-list/fuzz/fuzz.exe
+$ dune exec awesome-list/fuzz/fuzz_me.exe
 ```
 
 Alternatively you can also run the QuickCheck mode until a test failure is discovered with the `-i`
 option of the binary like this:
 ```
-$ dune exec -- awesome-list/fuzz/fuzz.exe -i
+$ dune exec -- awesome-list/fuzz/fuzz_me.exe -i
 ```
 
 In AFL mode, it just use the input supplied by AFL as a source of randomness to supply values of the
 right form to your test functions. You can run it just like with a regular fuzzing binary:
 ```
-$ dune build awesome-list/fuzz/fuzz.exe
-$ afl-fuzz -i awesome-list/fuzz/inputs -o _build/default/awesome-list/fuzz/findings ./_build/default/awesome-list/fuzz/fuzz.exe @@
+$ dune build awesome-list/fuzz/fuzz_me.exe
+$ afl-fuzz -i awesome-list/fuzz/inputs -o _build/default/awesome-list/fuzz/findings ./_build/default/awesome-list/fuzz/fuzz_me.exe @@
 ```
 
 Or use the convenience dune alias:
@@ -121,7 +121,7 @@ won't tell you much as it's just used to seed `crowbar` PRNG but you can run the
 those and the input values will be pretty printed the same way they are in QuickCheck mode:
 ```
 $ cd _build/default/awesome-list/fuzz
-$ ./fuzz.exe findings/crashes/<input_file>
+$ ./fuzz_me.exe findings/crashes/<input_file>
 Awesome_list.sort: ....
 Awesome_list.sort: FAIL
 
@@ -178,10 +178,10 @@ as:
  (name bun-fuzz)
  (locks %{project_root}/bun)
  (deps
-  fuzz.exe
+  fuzz_me.exe
   (source_tree input))
  (action
-  (run bun --input inputs --output findings -- ./fuzz.exe)))
+  (run bun --input inputs --output findings -- ./fuzz_me.exe)))
 ```
 
 The default `bun` invocation is very similar to a regular `afl-fuzz` invocation.
@@ -215,11 +215,11 @@ One useful bun feature is its `no-kill` mode. There's a `bun-fuzz-no-kill` alias
  (name bun-fuzz-no-kill)
  (locks %{project_root}/bun)
  (deps
-  fuzz.exe
+  fuzz_me.exe
   (source_tree input))
  (action
   (run timeout --preserve-status 1m bun --no-kill --input inputs --output
-    findings -- ./fuzz.exe)))
+    findings -- ./fuzz_me.exe)))
 ```
 
 The `--no-kill` option tells `bun` to let the fuzzing processes run even after they found their
