@@ -178,10 +178,10 @@ as:
  (name bun-fuzz)
  (locks %{project_root}/bun)
  (deps
-  fuzz_me.exe
+  (:exe fuzz_me.exe)
   (source_tree input))
  (action
-  (run bun --input inputs --output findings -- ./fuzz_me.exe)))
+  (run bun --input inputs --output findings -- ./%{exe})))
 ```
 
 The default `bun` invocation is very similar to a regular `afl-fuzz` invocation.
@@ -215,11 +215,11 @@ One useful bun feature is its `no-kill` mode. There's a `bun-fuzz-no-kill` alias
  (name bun-fuzz-no-kill)
  (locks %{project_root}/bun)
  (deps
-  fuzz_me.exe
+  (:exe fuzz_me.exe)
   (source_tree input))
  (action
   (run timeout --preserve-status 1m bun --no-kill --input inputs --output
-    findings -- ./fuzz_me.exe)))
+    findings -- ./%{exe})))
 ```
 
 The `--no-kill` option tells `bun` to let the fuzzing processes run even after they found their
